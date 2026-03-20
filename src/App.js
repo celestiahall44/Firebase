@@ -10,13 +10,12 @@ import {
 
 
 function App() {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState({})
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setLoading(false);
-      console.log(user);
       if (user) {
         setUser(user);
       }
@@ -26,7 +25,7 @@ function App() {
 
   function register() {
     createUserWithEmailAndPassword(auth, 'email@email.com', 'test123')
-      .then(({user}) => {
+      .then((user) => {
         console.log(user);
       })
       .catch((error) => {
@@ -47,15 +46,13 @@ function App() {
 
   function logout() {
     signOut(auth)
-      .then(() => {
-        setUser(null);
-      });
+    setUser({});
   }
 
   return (
     <div className="App">
-      <button onClick={login}>Login</button>
       <button onClick={register}>Register</button>
+      <button onClick={login}>Login</button>
       <button onClick={logout}>Logout</button>
       {loading ? 'Loading...' : user?.email}
     </div>
