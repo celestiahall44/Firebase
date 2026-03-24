@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { auth, db} from './firebase/init';
-import { collection, addDoc, getDocs, getDoc, doc, query, where, updatePost, deletePost, post } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, doc, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -31,15 +31,31 @@ function App() {
     deleteDoc(postRef);
   }
 
-  function createPost () {
-    const post = {
-      title: 'Land a 200kjob',
-      description: 'Finish Frontend Simplified',
-      uid: user.uid,
-    };
-    addDoc(collection(db, 'posts'), post)
-  }
+  async function createPost () {
 
+const post = {
+
+title: 'Land a 200kjob',
+
+description: 'Finish Frontend Simplified',
+
+uid: user.uid,
+
+};
+
+try {
+
+const docRef = await addDoc(collection(db, 'posts'), post);
+
+console.log("Post created with ID:", docRef.id);
+
+} catch (error) {
+
+console.log("Error creating post:", error.message)
+
+}
+
+}
   async function getAllPosts () {
     const { docs } = await getDocs(collection(db, 'posts'));
     const posts = docs.map(elem => ({ ...elem.data(), id: elem.id }));
@@ -50,7 +66,6 @@ function App() {
     const postRef = doc(db, "posts", id);
     const postSnap = await getDoc(postRef);
     return postSnap.data();
-    console.log(post);
   }
 
   async function getPostByUid() {
